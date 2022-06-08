@@ -7,10 +7,11 @@ if not game:IsLoaded() then
 	game.Loaded:Wait()
 end
 
--- Reset Values
+-- Set Values
 
 getgenv().AntiVoid = 'reset'
 getgenv().TriggerBot = 'reset'
+getgenv().stop = false
 getgenv()["IrisAd"] = true
 
 -- Load UI
@@ -114,7 +115,9 @@ function mineall() -- Mine all ores
                 
                 repeat
                     wait()
-                    axe.RemoteEvent:FireServer(v)
+                    if axe:FindFirstChild("RemoteEvent") then 
+                        axe.RemoteEvent:FireServer(v)
+                    end
                 until v.Name == "Broken" or axe:FindFirstChild("RemoteEvent") == nil
                 
                 -- Reset
@@ -257,6 +260,7 @@ function Fly()
     bv.maxForce = Vector3.new(9e9, 9e9, 9e9)
     repeat
         wait()
+        if plr.Character:FindFirstChild("Humanoid") then
         plr.Character.Humanoid.PlatformStand = true
         if ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0 then
             speed = speed + .5 + (speed / maxspeed)
@@ -290,6 +294,7 @@ function Fly()
         bg.cframe =
             game.Workspace.CurrentCamera.CoordinateFrame *
             CFrame.Angles(-math.rad((ctrl.f + ctrl.b) * 50 * speed / maxspeed), 0, 0)
+    end
     until not flying
     ctrl = {f = 0, b = 0, l = 0, r = 0}
     lastctrl = {f = 0, b = 0, l = 0, r = 0}
@@ -395,9 +400,11 @@ RunService.Heartbeat:Connect(function()
         if RootPart == nil then
             return
         end
-        if debounce == false then
+        if debounce == false and getgenv().stop == false then
             Humanoid.WalkSpeed = Speed
             Humanoid.JumpPower = Jump
+        elseif getgenv().stop == true then
+            Humanoid.WalkSpeed = 0
         end
         
         -- Last position
@@ -454,6 +461,12 @@ RunService.Heartbeat:Connect(function()
             getgenv().AutoHeal = true
         end
     end
+end)
+
+game:GetService("ReplicatedStorage").Events.HideMenu.OnClientEvent:Connect(function()
+    getgenv().stop = true
+    wait(3)
+    getgenv().stop = false
 end)
 
 local Section = UI.New({
@@ -522,7 +535,7 @@ Section.Button({
         
         sword.Handle.Massless = true
         sword.Handle.Size = Vector3.new(25,25,25)
-        sword.GripPos = Vector3.new(0,0,0)
+        --sword.GripPos = Vector3.new(0,0,0)
     end
 })
 
@@ -643,7 +656,7 @@ Section3.Slider({
         Jump = value
     end,
     Min = 50,
-    Max = 200,
+    Max = 125,
     Def = 50
 })
 
@@ -653,7 +666,7 @@ Section3.Slider({
         _G.JumpHeight = value
     end,
     Min = 50,
-    Max = 200,
+    Max = 125,
     Def = 50
 })
 
@@ -691,6 +704,13 @@ Section4.Button({
         LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(11.011512756347656, 264.9999084472656, 79.23206329345703)
         wait(0.3)
         LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(origpos)
+    end
+})
+
+Section4.Button({
+    Text = "Execute Infinite-Yield",
+    Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
     end
 })
 
