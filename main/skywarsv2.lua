@@ -742,7 +742,7 @@ Section4.Button({
 -- autoload
 local tp = syn and syn.queue_on_teleport or queue_on_teleport
 if tp then
-    tp("loadstring(game:HttpGet('https://github.com/notxkid/illumina/raw/main/main/skywarsv2.lua'))()")
+    tp("loadstring(game:HttpGet('https://raw.githubusercontent.com/notxkid/illumina/main/main/skywarsv2.lua'))()")
 end
 
 UI.Banner({
