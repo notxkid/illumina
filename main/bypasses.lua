@@ -20,6 +20,3 @@ end
 for _, con in ipairs(getconnections(lp.Character.Humanoid:GetPropertyChangedSignal("JumpPower"))) do
     con:Disable()
 end
-
--- Anti Kick By Exunys
-loadstring(game:HttpGet("https://pastebin.com/raw/gsxvWvnj"))()
